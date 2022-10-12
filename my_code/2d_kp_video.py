@@ -25,7 +25,7 @@ def video_kp(video_path, config, checkpoint, out_video_root):
 
         # read video
         video = mmcv.VideoReader(video_path)
-        assert video.opened, f'Faild to load video file {args.video_path}'
+        assert video.opened, f'Faild to load video file {video_path}'
 
         if out_video_root == '':
             save_out_video = False
