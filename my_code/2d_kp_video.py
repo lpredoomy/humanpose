@@ -9,7 +9,7 @@ from mmpose.apis import (inference_bottom_up_pose_model, init_pose_model,
                          vis_pose_result)
 from mmpose.datasets import DatasetInfo
 
-def video_kp(video_path, config, checkpoint, out_video_root):
+def video_kp(video_path, config, checkpoint, out_video_root, show):
     pose_model = init_pose_model(config, checkpoint)
 
     dataset = pose_model.cfg.data['test']['type']
@@ -69,17 +69,21 @@ def video_kp(video_path, config, checkpoint, out_video_root):
                     dataset_info=dataset_info,
                     kpt_score_thr=0.3,
                     show=False)
-
+                if show:
+                    cv2.imshow('Image', vis_frame)
                 if save_out_video:
                     videoWriter.write(vis_frame)
+                if show and cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
             if save_out_video:
                 videoWriter.release()
-
+            if show:
+                cv2.destroyAllWindows()
 if __name__ == '__main__':
-    video_path = '../my_data/1.avi'
+    video_path = '../my_data/3.avi'
     # pose_config = '../associative_embedding_hrnet_w32_coco_512x512.py'
     # pose_checkpoint = '../hrnet_w32_coco_512x512-bcb8c247_20200816.pth'
-    pose_config = '../configs/body/2d_kpt_sview_rgb_img/associative_embedding/coco/hrnet_w32_coco_512x512.py'
-    pose_checkpoint='../hrnet_w32_coco_512x512-bcb8c247_20200816.pth'
+    pose_config = '../configs/body/2d_kpt_sview_rgb_img/associative_embedding/coco/higherhrnet_w32_coco_512x512_udp.py'
+    pose_checkpoint='higher_hrnet32_coco_512x512_udp-8cc64794_20210222.pth'
     out_img_root = 'results'
-    video_kp(video_path,pose_config,pose_checkpoint,out_img_root)
+    video_kp(video_path,pose_config,pose_checkpoint,out_img_root,show=True)
